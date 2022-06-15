@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "target": "ESNext",
+    "module": "CommonJS",
+    "outDir": "build",
+    "strict": false,
+    "skipLibCheck": true,
+    "lib": ["esnext"],
+    "esModuleInterop": true,
+    "moduleResolution": "Node",
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@lib": ["src/lib/index"],
+      "@utils": ["src/utils/index"],
+      "@types": ["src/types/index"],
+      "@routes": ["src/routes/index"],
+      "@services": ["src/services/index"],
+      "@models": ["src/models/index"],
+      "@controllers": ["src/controllers/index"],
+      "@middlewares": ["src/middlewares/index"],
+      "@interfaces": ["src/interfaces/index"],
+      "@errors": ["src/errors/index"],
+      "@config": ["src/config/index"],
+      "@web3Types": ["typechain-types/contracts/*"]
+    }
+  },
+  "exclude": ["build", "node_modules"],
+  "include": ["src/**/*.ts", "./scripts", "./test"],
+  "files": ["./hardhat.config.ts"]
+}

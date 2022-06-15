@@ -1,0 +1,1 @@
+export { cute } from "./catchAsync";
