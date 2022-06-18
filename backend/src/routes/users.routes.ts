@@ -24,13 +24,58 @@ const ipfsClient = create({
 
 const router = Router();
 
-router.post(
+router.get(
   "/:address",
   cute(async (req, res, next) => {
-    const user = await handleUserState(req.params.address, req.body);
+    const user = await (
+      await handleUserState(req.params.address, req.body)
+    ).populate({
+      path: "collections",
+      populate: {
+        path: "nfts",
+      },
+    });
 
     res.json({
-      User: user,
+      user,
+    });
+  })
+);
+router.post(
+  "/:address",
+  handlFile.fields([{ name: "image", maxCount: 1 }]),
+  cute(async (req, res, next) => {
+    const { name } = req.body;
+    await handleUserState(req.params.address);
+
+    const { image } = req?.files as {
+      image: Express.Multer.File[];
+    };
+
+    let avatar: string | null = null;
+    if (image) {
+      const { path: profileUrl } = await ipfsClient.add(image[0].buffer);
+      console.log(profileUrl);
+
+      avatar = profileUrl;
+    }
+    console.log(name, avatar);
+
+    const updatedUser = await (
+      await User.findOneAndUpdate(
+        { address: req.params.address },
+        { name, avatar },
+        { new: true }
+      )
+    ).populate({
+      path: "collections",
+      populate: {
+        path: "nfts",
+      },
+    });
+
+    res.json({
+      user: updatedUser,
     });
   })
 );

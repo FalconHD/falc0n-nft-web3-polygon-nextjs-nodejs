@@ -7,12 +7,14 @@ export const GlobalInput = ({
   label,
   value,
   type,
+  disabled = false,
 }: {
-  error: string | undefined;
+  error?: string | undefined;
   handleChange: ChangeEventHandler<HTMLInputElement>;
   label: string;
   value: string | number;
   type: "text" | "number";
+  disabled?: boolean;
 }) => {
   return (
     <div className="mb-6 w-full">
@@ -25,6 +27,7 @@ export const GlobalInput = ({
             {label}
           </label>
           <input
+            disabled={disabled}
             name={label.toLocaleLowerCase()}
             onChange={handleChange}
             value={value}

@@ -1,7 +1,7 @@
 import React, { ReactElement, ReactNode, useEffect, useState } from "react";
 import { Header } from "../Header";
 import { Footer } from "../footer";
-import { setContract } from "@/slices";
+import { setContract, setUser } from "@/slices";
 import { useWallet, useModal, useSlice, useFetch } from "@/hooks";
 import axios from "axios";
 
@@ -23,7 +23,7 @@ export const Layout = ({
       (async () => {
         await fetcher({
           method: "GET",
-          url: "/contract",
+          url: "/contract/" + address,
           headers: {
             "Content-Type": "application/json",
           },
@@ -32,8 +32,6 @@ export const Layout = ({
 
       //setup contract when evenst Fired
       window.ethereum?.on("accountsChanged", () => {
-        console.log("ana hna");
-
         setupContract();
       });
 
@@ -43,7 +41,7 @@ export const Layout = ({
     } else {
       openModalWithData("MetaMaskNotInstalled");
     }
-  }, [isMetaInsttaled]);
+  }, [isMetaInsttaled, address]);
 
   // useEffect(() => {
   //   if (address) {
@@ -69,7 +67,8 @@ export const Layout = ({
       setStyle(["grayscale cursor-not-allowed"]);
     } else if (data) {
       setStyle([""]);
-      dispatch(setContract(data));
+      dispatch(setContract({ abi: data.abi, address: data.address }));
+      dispatch(setUser(data?.user));
     }
   }, [data, isError]);
 

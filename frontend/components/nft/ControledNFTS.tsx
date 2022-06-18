@@ -1,4 +1,5 @@
 import { useModal } from "hooks/Modal";
+import Link from "next/link";
 import React, { useRef } from "react";
 import { NftCard } from "..";
 
@@ -56,14 +57,16 @@ export const ControledNFTS = ({ nft }: { nft: any }) => {
               {nft.onSale ? "Unlist" : "List"}
             </a>
           </li>
-          <li>
-            <a
-              href="#"
-              className="block py-2 px-4 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-            >
-              Delete
-            </a>
-          </li>
+          <Link href={`/nft/${nft?.nftToken.toString()}`}>
+            <li>
+              <a
+                href="#"
+                className="block py-2 px-4 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+              >
+                Go
+              </a>
+            </li>
+          </Link>
         </ul>
       </div>
       <NftCard nft={nft} />

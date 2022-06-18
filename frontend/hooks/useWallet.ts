@@ -43,8 +43,8 @@ export const useWallet = () => {
   useEffect(() => {
     if (window.ethereum) {
       contractAddress && abi && setupContract();
-      window.ethereum.on("accountsChanged", setupContract);
-      window.ethereum.on("netw", setupContract);
+      window.ethereum.on("accountsChanged",()=> setupContract());
+      window.ethereum.on("chainChanged", setupContract);
     } else {
       setIsMetaInstalled(false);
     }

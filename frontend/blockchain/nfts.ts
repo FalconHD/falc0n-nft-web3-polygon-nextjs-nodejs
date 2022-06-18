@@ -153,6 +153,7 @@ export const listNFT = async ({
   const result = await transactionOnsale.wait();
   return result;
 };
+
 export const unlistNFT = async ({
   fetcher,
   address,
@@ -165,4 +166,11 @@ export const unlistNFT = async ({
   const transaction = await contract?.setOnSaleNFT(nftToken, false);
   const result = await transaction.wait();
   return result;
+};
+
+export const fetchMarketTransactions = async ({
+  args,
+  contract,
+}: IcbBlockChain) => {
+  return await contract?.fetchMarketTransactions();
 };

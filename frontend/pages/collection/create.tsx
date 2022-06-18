@@ -5,6 +5,8 @@ import React from "react";
 import { CreateCollectionProvider } from "@/formikProviders";
 
 const Create: NextWithLayoutPage = () => {
+
+
   return (
     <div>
       <Head>

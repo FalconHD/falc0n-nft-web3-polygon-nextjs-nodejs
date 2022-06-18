@@ -10,15 +10,29 @@ import { getCollection } from "blockchain/collection";
 import { getNFTByCollection } from "blockchain/nfts";
 import { ethers } from "ethers";
 import { useBlockchain } from "hooks/useBlockchain";
+import { useFetch } from "hooks/useFetch";
 import { useWallet } from "hooks/useWallet";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
 
-const DATA = {};
+const filterBy: { [key: string]: (arr: any) => any } = {
+  new: (arr: any) =>
+    arr.sort(
+      (a: any, b: any) => b?.nftToken?.toString() - a?.nftToken?.toString()
+    ).reverse(),
+  popular: (arr: any) =>
+    arr.sort((a: any, b: any) => b?.likes?.length - a?.likes?.length),
+  onSale: (arr: any) => arr.filter((i: any) => i.onSale),
+  notForSale: (arr: any) => arr.filter((i: any) => !i.onSale),
+};
 
 const CollectionItem: NextWithLayoutPage = () => {
   const [collection, setCollection] = useState<any | null>(null);
+  const [filterType, setFilterType] = useState<string>("new");
   const [collectionNfts, setCollectionNfts] = useState<any | null>(null);
+  const [filtredNfts, setFiltredNfts] = useState<any | null>(null);
+  const [filterBySearch, setFilterBySearch] = useState<any | null>(null);
+  const [fetcher, { data: owner }] = useFetch();
   const { contrat, address, setupContract } = useWallet();
   const {
     data: BlockCollection,
@@ -51,14 +65,27 @@ const CollectionItem: NextWithLayoutPage = () => {
       const items = await Promise.all(
         nftsCollectionBlock?.map(async (i: any) => {
           const tokenUri = await contrat?.tokenURI(i.nftToken);
-          console.log("nft parser ", tokenUri);
 
           if (!tokenUri) return;
+
           const { data } = await axios.get(tokenUri);
+
+          const targetnft = await fetcher({
+            url: `/nft/${ethers.utils.formatUnits("" + i?.nftToken, 18)}`,
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
           return {
             ...i,
             price: parseFloat(ethers.utils.formatUnits(i.price, 18)),
             metadata: data,
+            likes:
+              targetnft?.likes && targetnft?.likes.length > 0
+                ? targetnft.likes
+                : [],
           };
         })
       );
@@ -70,12 +97,21 @@ const CollectionItem: NextWithLayoutPage = () => {
     const tokenUri = collection.tokenURI;
     if (!tokenUri) return;
     const { data } = await axios.get(tokenUri);
+
+    const { user: owner } = await fetcher({
+      url: `/user/${collection?.creator}`,
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     setCollection({
       ...collection,
       floor_price: parseFloat(
         ethers.utils.formatUnits(collection.floor_price, 18)
       ),
       metadata: data,
+      owner,
     });
   };
 
@@ -88,8 +124,6 @@ const CollectionItem: NextWithLayoutPage = () => {
   }, [contrat, address, id]);
 
   useEffect(() => {
-    console.log("collectionblock : ", BlockCollection);
-
     if (contrat && BlockCollection) {
       getNftsCollection();
     } else {
@@ -110,8 +144,23 @@ const CollectionItem: NextWithLayoutPage = () => {
   }, [collection]);
 
   useEffect(() => {
-    console.log("parsed nfts :", collectionNfts);
-  }, [collectionNfts]);
+    if (collectionNfts) {
+      let filterd = filterBy[filterType](collectionNfts);
+      console.log(filterd);
+
+      if (filterBySearch) {
+        filterd = filterd.filter((i: any) => {
+          return i?.metadata?.name
+            ?.toLowerCase()
+            ?.includes(filterBySearch?.toLowerCase());
+        });
+      }
+      setFiltredNfts(filterd);
+    }
+    return () => {
+      setFiltredNfts(null);
+    };
+  }, [filterType, collectionNfts, filterBySearch]);
 
   return (
     <>
@@ -128,8 +177,11 @@ const CollectionItem: NextWithLayoutPage = () => {
       />
       <CollectionState collection={collection} />
       <div className="lg:px-20 md:px-20 mt-5">
-        <NftFilter />
-        <GridCards nfts={collectionNfts} id="nft" />
+        <NftFilter
+          setFilterBySearch={setFilterBySearch}
+          setFilterType={setFilterType}
+        />
+        <GridCards nfts={filtredNfts || collectionNfts} id="nft" />
       </div>
     </>
   );

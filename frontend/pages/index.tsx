@@ -9,10 +9,12 @@ import axios from "axios";
 import { getNFTS } from "blockchain/nfts";
 import { ethers } from "ethers";
 import { useSlice } from "hooks/reduxHooks";
+import { useFetch } from "hooks/useFetch";
 
 const Home: NextWithLayoutPage = () => {
   const [collectionFeed, setCollectionFeed] = useState<any>([]);
   const [{ user }, dispatch] = useSlice("contract");
+  const [fetcher] = useFetch();
   const [nftsFeed, setNftsFeed] = useState<any>([]);
   const { contrat, setupContract } = useWallet();
   const { runner: collectionsRunner, data: collections } =
@@ -24,10 +26,6 @@ const Home: NextWithLayoutPage = () => {
       await nftsRunner();
     })();
   }, [contrat]);
-
-  useEffect(() => {
-    console.log("ntfss", nftsFeed);
-  }, [nftsFeed]);
 
   const getCollectionsMemo = useCallback(async () => {
     const items = await Promise.all(
@@ -45,12 +43,6 @@ const Home: NextWithLayoutPage = () => {
         };
       })
     );
-    // const result = user.collections
-    //   .sort((a: any, b: any) => b.followers.legnth - a.followers.length)
-    //   .map((e: any) => items.find((elm) => elm.collectionToken == e.address));
-
-    // console.log(result);
-
     setCollectionFeed(items);
   }, [collections]);
 
@@ -60,10 +52,22 @@ const Home: NextWithLayoutPage = () => {
         const tokenUri = await contrat?.tokenURI(i.nftToken);
         if (!tokenUri) return;
         const { data } = await axios.get(tokenUri);
+        const targetnft = await fetcher({
+          url: `/nft/${ethers.utils.formatUnits("" + i?.nftToken, 18)}`,
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
         return {
           ...i,
           price: parseFloat(ethers.utils.formatUnits(i.price, 18)),
           metadata: data,
+          likes:
+            targetnft?.likes && targetnft?.likes.length > 0
+              ? targetnft.likes
+              : [],
         };
       })
     );

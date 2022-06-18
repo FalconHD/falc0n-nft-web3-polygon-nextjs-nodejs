@@ -5,18 +5,24 @@ import { FilledButton } from "components/global";
 import { GridCards } from "components/Grids";
 import { ethers } from "ethers";
 import { useBlockchain } from "hooks/useBlockchain";
+import { useFetch } from "hooks/useFetch";
 import { useWallet } from "hooks/useWallet";
 import React, { useCallback, useEffect, useState } from "react";
 
 const Explore: NextWithLayoutPage = () => {
   const [nftsFeed, setNftsFeed] = useState<any>([]);
   const { contrat, setupContract } = useWallet();
+  const [fetcher] = useFetch();
   const { runner: nftsRunner, data: nfts } = useBlockchain(getNFTS);
 
   useEffect(() => {
-    (async () => {
-      await nftsRunner();
-    })();
+    if (contrat) {
+      (async () => {
+        await nftsRunner();
+      })();
+    } else {
+      setupContract();
+    }
   }, [contrat]);
 
   const getNFTSFeed = useCallback(async () => {
@@ -26,10 +32,22 @@ const Explore: NextWithLayoutPage = () => {
           const tokenUri = await contrat?.tokenURI(i.nftToken);
           if (!tokenUri) return;
           const { data } = await axios.get(tokenUri);
+          const targetnft = await fetcher({
+            url: `/nft/${ethers.utils.formatUnits("" + i?.nftToken, 18)}`,
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
           return {
             ...i,
             price: parseFloat(ethers.utils.formatUnits(i?.price, 18)),
             metadata: data,
+            likes:
+              targetnft?.likes && targetnft?.likes.length > 0
+                ? targetnft.likes
+                : [],
           };
         })
       );

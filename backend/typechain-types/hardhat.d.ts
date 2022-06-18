@@ -44,10 +44,6 @@ declare module "hardhat/types/runtime" {
       name: "NFTMarket",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.NFTMarket__factory>;
-    getContractFactory(
-      name: "NFTMarketplace",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.NFTMarketplace__factory>;
 
     getContractAt(
       name: "ERC721",
@@ -89,11 +85,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.NFTMarket>;
-    getContractAt(
-      name: "NFTMarketplace",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.NFTMarketplace>;
 
     // default types
     getContractFactory(

@@ -1,3 +1,8 @@
+import { setUser } from "@/slices";
+import { ethers } from "ethers";
+import { useSlice } from "hooks/reduxHooks";
+import { useFetch } from "hooks/useFetch";
+import { useWallet } from "hooks/useWallet";
 import Image from "next/image";
 import React, {
   useEffect,
@@ -23,7 +28,47 @@ export const NftCard = forwardRef(
     },
     ref: LegacyRef<HTMLDivElement> | undefined
   ) => {
+    const [fetcher, { data, error, isError, loading }] = useFetch();
+    const { address } = useWallet();
+    const [{ user }, dispatch] = useSlice("contract");
+    const [likes, setLikes] = useState(0);
     const [loveIt, setLoveIt] = useState(false);
+    
+
+    useEffect(() => {
+      if (nft) {
+        setLoveIt(
+          user?.likes?.includes(
+            ethers.utils.formatUnits("" + nft?.nftToken, 18)
+          )
+        );
+        setLikes(nft?.likes?.length);
+      }
+    }, [nft]);
+
+    const setLikesToggle = async (loveIt: boolean) => {
+      const result = await fetcher({
+        url: `/nft/like/${ethers.utils.formatUnits("" + nft?.nftToken, 18)}`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          liker: address,
+        }),
+      });
+      setLoveIt(loveIt);
+      setLikes(loveIt ? likes + 1 : likes - 1);
+      result && dispatch(setUser(result?.user));
+    };
+
+    useEffect(() => {
+      console.log(
+        user?.likes?.includes(ethers.utils.formatUnits("" + nft?.nftToken, 18)),
+        nft,
+        loveIt
+      );
+    }, [nft]);
 
     return (
       <div
@@ -55,12 +100,12 @@ export const NftCard = forwardRef(
               <strong>{nft?.price}</strong> ETH
             </span>
             <span
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.stopPropagation();
-                setLoveIt(!loveIt);
+                await setLikesToggle(!loveIt);
               }}
             >
-              {loveIt ? (
+              {!loveIt ? (
                 <section className="flex gap-1 justify-center items-center text-white cursor-pointer">
                   <svg
                     className="w-5 h-5 text-grayDark"
@@ -76,9 +121,7 @@ export const NftCard = forwardRef(
                       d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                     />
                   </svg>
-                  <small className="text-md font-semibold">
-                    {nft?.likes?.length}
-                  </small>
+                  <small className="text-md font-semibold">{likes}</small>
                 </section>
               ) : (
                 <section className="flex gap-1 justify-center items-center text-white cursor-pointer">
@@ -94,9 +137,7 @@ export const NftCard = forwardRef(
                       clipRule="evenodd"
                     />
                   </svg>
-                  <small className="text-md font-semibold">
-                    {nft?.likes?.length}
-                  </small>
+                  <small className="text-md font-semibold">{likes}</small>
                 </section>
               )}
             </span>

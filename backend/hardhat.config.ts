@@ -4,8 +4,6 @@ import "@typechain/hardhat";
 import "@nomiclabs/hardhat-waffle";
 import "@nomiclabs/hardhat-ethers";
 
-console.log(process.env.privateKey);
-
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   networks: {
@@ -16,7 +14,7 @@ const config: HardhatUserConfig = {
     mumbai: {
       url: "https://polygon-mumbai.infura.io/v3/437ccacebcd64928a63bc74379dbe277",
       accounts: [
-        "2f03ad9086c22078548244ac86c676120b09df221b1c27828cacfee6d7f6fea5",
+        "c087ab2156d6c9be921f6ebd14f622b6083188c855723ce26ea7fc454f077076",
       ],
     },
   },

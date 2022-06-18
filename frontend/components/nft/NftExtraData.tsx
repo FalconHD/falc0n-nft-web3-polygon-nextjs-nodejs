@@ -1,10 +1,27 @@
-import React, { useState } from "react";
+import React, { ReactElement, useState } from "react";
+import { Details } from "./Details";
+import { History } from "./History";
+import { Offers } from "./Offres";
 
-export const NftExtraData = ({ description }: { description: string }) => {
+export const NftExtraData = ({
+  description,
+  offers,
+  transactions,
+}: {
+  description: string;
+  offers: Array<any>;
+  transactions: Array<any>;
+}) => {
   const [active, setActive] = useState("details");
 
+  const details: { [key: string]: ReactElement } = {
+    details: <Details description={description} />,
+    history: <History transactions={transactions} />,
+    offers: <Offers offers={offers} />,
+  };
+
   return (
-    <section className="w-full flex flex-col gap-4 h-40">
+    <section className="w-full flex flex-col gap-4 max-h-60">
       <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-500 ">
         <ul className="flex flex-wrap -mb-px">
           <li
@@ -53,11 +70,7 @@ export const NftExtraData = ({ description }: { description: string }) => {
         </ul>
       </div>
       <div className=" max-h-64 min-h-65 overflow-y-scroll">
-        {active == "details" ? (
-          <p className="text-white break-all">{description}</p>
-        ) : (
-          <h1>offers</h1>
-        )}
+        {details[active]}
       </div>
     </section>
   );

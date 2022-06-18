@@ -31,7 +31,7 @@ export const CollectionState = ({ collection }: { collection: any }) => {
       <section className="w-full flex justify-center items-center text-white font-thin">
         Created By &nbsp;
         <span className="font-medium text-primary">
-          {collection?.creator.slice(0, 5) || "Falc0n.exe"}
+          {collection?.owner?.name?.toUpperCase() || collection?.creator.slice(0, 5)}
         </span>
       </section>
       <section className="w-full flex justify-center items-center py-4">

@@ -10,7 +10,7 @@ export const CollectionHeader = ({ cover, image }: ICollection) => {
         style={{
           backgroundImage: `url(${cover})`,
           backgroundRepeat: "no-repeat",
-          backgroundSize: "contain",
+          backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       ></div>

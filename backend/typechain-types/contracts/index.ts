@@ -2,4 +2,3 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { NFTMarket } from "./NFTMarket";
-export type { NFTMarketplace } from "./NFTMarketplace";

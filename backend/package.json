@@ -6,7 +6,7 @@
     "hardhat": "npx hardhat node",
     "compile": "npx hardhat compile",
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only src/server.ts",
-    "dev:deploy": "yarn deploy:localhost && ts-node-dev -r tsconfig-paths/register --respawn --transpile-only src/server.ts",
+    "dev:deploy": "yarn compile && yarn deploy:localhost && ts-node-dev -r tsconfig-paths/register --respawn --transpile-only src/server.ts",
     "deploy:localhost": "npx hardhat run --network localhost scripts/deploy.js",
     "deploy:mumbai": "yarn compile && npx hardhat run --network mumbai scripts/deploy.js",
     "build": "yarn deploy:mumbai && tsc && tsc-alias ",

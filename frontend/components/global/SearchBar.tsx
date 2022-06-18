@@ -1,6 +1,10 @@
 import React from "react";
 
-export const SearchBar = () => {
+export const SearchBar = ({
+  setFilterBySearch,
+}: {
+  setFilterBySearch?: Function;
+}) => {
   return (
     <div className="flex lg:flex-1 md:flex-1">
       <button
@@ -39,6 +43,7 @@ export const SearchBar = () => {
           </svg>
         </div>
         <input
+          onChange={(e) => setFilterBySearch && setFilterBySearch(e.target.value)}
           type="text"
           id="search-navbar"
           className="block p-2 pl-10 w-full text-white bg-Black-2 rounded-xl"

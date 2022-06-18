@@ -312,10 +312,6 @@ contract NFTMarket is ERC721URIStorage {
 
         // transaction
         if (idToNFT[NFTToken].owner.send(msg.value)) {
-            _transfer(idToNFT[NFTToken].owner, msg.sender, NFTToken);
-            idToNFT[NFTToken].owner = payable(msg.sender);
-            idToNFT[NFTToken].onSale = false;
-
             // transaction history
             _transactionIds.increment();
             uint256 transactionId = _transactionIds.current();
@@ -326,6 +322,10 @@ contract NFTMarket is ERC721URIStorage {
                 payable(msg.sender),
                 idToNFT[NFTToken].price
             );
+
+            _transfer(idToNFT[NFTToken].owner, msg.sender, NFTToken);
+            idToNFT[NFTToken].owner = payable(msg.sender);
+            idToNFT[NFTToken].onSale = false;
         }
     }
 
@@ -448,7 +448,7 @@ contract NFTMarket is ERC721URIStorage {
 
         for (uint256 i = 0; i < transactionCount; i++) {
             MarketTransaction memory currentTransaction = idToMarketTransaction[
-                i
+                i + 1
             ];
             transactions[i] = currentTransaction;
         }

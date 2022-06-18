@@ -1,1 +1,1 @@
-export { cute } from "./catchAsync";
+export { cute } from "./Cute";

@@ -43,7 +43,7 @@ const validationSchema = () =>
       .test(
         "fileSize",
         "File Size is too large",
-        (value) => value?.size <= 2000000
+        (value) => value?.size <= 20000000
       )
       .test("fileType", "Unsupported File Format", (value) =>
         SUPPORTED_TYPES.includes(value?.type)

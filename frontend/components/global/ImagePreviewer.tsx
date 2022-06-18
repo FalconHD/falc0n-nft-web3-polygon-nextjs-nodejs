@@ -5,20 +5,28 @@ export const ImagePreviewer = ({
   obj,
   style,
   setFieldValue,
+  handleChange,
   name,
 }: {
   obj: File;
   style: string;
-  setFieldValue: (
+  handleChange?: () => void;
+  setFieldValue?: (
     field: string,
     value: any,
     shouldValidate?: boolean | undefined
   ) => void;
   name: string;
 }) => {
+  console.log(obj);
+
   return (
     <div
-      onClick={() => setFieldValue(name, null)}
+      onClick={() =>
+        setFieldValue
+          ? setFieldValue(name, null)
+          : handleChange && handleChange()
+      }
       className="
           relative 
           flex flex-col 

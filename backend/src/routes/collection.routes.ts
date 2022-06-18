@@ -52,9 +52,9 @@ router.post(
       cover: Express.Multer.File[];
     };
 
+    //?uplaoding images to ipfs
     const { path: profileUrl } = await ipfsClient.add(profile[0].buffer);
     const { path: coverUrl } = await ipfsClient.add(cover[0].buffer);
-    // const weiPrice = ethers.utils.parseUnits(price, "ether");
 
     const metadata = {
       name: name,
@@ -63,6 +63,7 @@ router.post(
       cover: coverUrl,
     };
 
+    //?upload the metadata to ipfs
     const { path: metadataPath } = await ipfsClient.add(
       JSON.stringify(metadata)
     );

@@ -4,10 +4,9 @@ declare global {
       DATABASE_URL: string;
       APP_HOSTNAME: string;
       APP_URL: string;
+      projectSecret: string;
+      projectId: string;
       NODE_ENV: "development" | "production";
-      JWT_SECRET: string;
-      JWT_ADMIN: string;
-      JWT_SUPER: string;
     }
   }
 }

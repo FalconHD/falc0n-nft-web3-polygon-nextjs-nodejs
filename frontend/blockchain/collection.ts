@@ -14,7 +14,6 @@ type IcbBlockChain = {
 export const createCollection = async ({
   contract,
   fetcher,
-  data,
   args,
   dispatch,
   address,
@@ -28,10 +27,7 @@ export const createCollection = async ({
     },
   });
 
-  console.log(contract);
-
   const transaction = await contract?.createCollection(res?.url);
-  console.log(transaction);
 
   const receipt = await transaction.wait();
   //@ts-ignore
@@ -50,8 +46,6 @@ export const createCollection = async ({
     },
   });
   dispatch(setUser(user));
-  console.log(user);
-
   return receipt?.events[0]?.args;
 };
 
@@ -59,25 +53,11 @@ export const getCollections = async ({ contract }: IcbBlockChain) => {
   return await contract?.getCollections();
 };
 
-export const getAddressCollections = async ({
-  fetcher,
-  address,
-  dispatch,
-  args,
-  contract,
-  data,
-}: IcbBlockChain) => {
+export const getAddressCollections = async ({ contract }: IcbBlockChain) => {
   return await contract?.getCollectionByOwner();
 };
 
-export const getCollection = async ({
-  fetcher,
-  address,
-  dispatch,
-  args,
-  contract,
-  data,
-}: IcbBlockChain) => {
+export const getCollection = async ({ args, contract }: IcbBlockChain) => {
   return await contract?.getCollection(BigNumber.from(args));
 };
 

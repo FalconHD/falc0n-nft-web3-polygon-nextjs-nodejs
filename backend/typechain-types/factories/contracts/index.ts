@@ -2,4 +2,3 @@
 /* tslint:disable */
 /* eslint-disable */
 export { NFTMarket__factory } from "./NFTMarket__factory";
-export { NFTMarketplace__factory } from "./NFTMarketplace__factory";

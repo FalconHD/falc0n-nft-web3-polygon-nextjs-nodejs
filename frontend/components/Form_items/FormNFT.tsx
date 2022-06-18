@@ -31,9 +31,10 @@ const LoadingEffect = () => (
   </svg>
 );
 
-export const FormNFT = () => {
+export const FormNFT = ({ fromQuery }: { fromQuery?: string }) => {
   const { address, contrat, setupContract } = useWallet();
   const [collections, setCollections] = useState<any>([]);
+  const [activeFromQuery, setActiveFromQuery] = useState<any>("");
   const { runner, data, error, isError, loading } = useBlockchain(
     getAddressCollections
   );
@@ -47,6 +48,15 @@ export const FormNFT = () => {
     isSubmitting,
     setFieldValue,
   } = useFormikContext<addNFTValues>();
+
+  useEffect(() => {
+    if (fromQuery) {
+      const finded = collections.find(
+        (collection: any) => collection?.metadata?.name === fromQuery
+      );
+      setActiveFromQuery(finded?.collectionToken?.toString());
+    }
+  }, [fromQuery, collections]);
 
   const getCollectionsMemo = useCallback(async () => {
     if (contrat) {
@@ -144,17 +154,24 @@ export const FormNFT = () => {
         <select
           name="collection"
           onChange={handleChange}
-          defaultValue={collections ? collections[0]?.collectionToken : ""}
           id="collections"
           className="text-white text-sm bg-Black-2 rounded-lg p-3 w-full outline-none"
         >
           <option value="">Select Collection</option>
           {collections?.map((collection: any, idx: number) => {
-            return (
-              <option key={idx} value={collection?.collectionToken}>
-                {collection?.metadata?.name}
-              </option>
-            );
+            if (collection?.metadata.name === fromQuery) {
+              return (
+                <option selected key={idx} value={collection?.collectionToken}>
+                  {collection?.metadata?.name}
+                </option>
+              );
+            } else {
+              return (
+                <option key={idx} value={collection?.collectionToken}>
+                  {collection?.metadata?.name}
+                </option>
+              );
+            }
           })}
         </select>
       </div>

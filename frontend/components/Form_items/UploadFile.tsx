@@ -3,14 +3,15 @@ import React, { ChangeEventHandler } from "react";
 export const UploadFile = ({
   value,
   error,
+  handleChange,
   setFieldValue,
   name,
 }: {
-  value: string;
-  error: string | undefined;
+  value?: string;
+  error?: string | undefined;
   handleChange: ChangeEventHandler<HTMLInputElement>;
   name: string;
-  setFieldValue: (
+  setFieldValue?: (
     field: string,
     value: any,
     shouldValidate?: boolean | undefined
@@ -48,8 +49,11 @@ export const UploadFile = ({
             id={`dropzone-file-${name}`}
             name={name}
             onChange={(event) => {
-              if (event.currentTarget.files)
+              if (event.currentTarget.files && setFieldValue) {
                 setFieldValue(name, event.currentTarget.files[0]);
+              } else {
+                handleChange(event);
+              }
             }}
             type="file"
             className="hidden"

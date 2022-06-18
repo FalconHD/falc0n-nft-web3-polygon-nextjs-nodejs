@@ -3,7 +3,13 @@ import Link from "next/link";
 import React from "react";
 import { NftCard } from "..";
 
-export const GridCards = ({ id, nfts }: { id: string; nfts: any }) => {
+export const GridCards = ({
+  id,
+  nfts,
+}: {
+  id: string;
+  nfts: any;
+}) => {
   return (
     <div className="grid place-content-center lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
       {!(nfts?.length > 0)
@@ -36,7 +42,7 @@ export const GridCards = ({ id, nfts }: { id: string; nfts: any }) => {
               href={`/${id}/${nft?.nftToken?.toString()}`}
               passHref
             >
-              <NftCard nft={nft} />
+              <NftCard  nft={nft} />
             </Link>
           ))}
     </div>

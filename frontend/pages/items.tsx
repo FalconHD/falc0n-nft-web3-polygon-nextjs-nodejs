@@ -6,6 +6,7 @@ import { Carousel } from "components/global";
 import { GridCardsWithControl } from "components/Grids";
 import { ethers } from "ethers";
 import { useBlockchain } from "hooks/useBlockchain";
+import { useFetch } from "hooks/useFetch";
 import { useWallet } from "hooks/useWallet";
 import React, { useCallback, useEffect, useState } from "react";
 
@@ -13,6 +14,7 @@ const MyItems: NextWithLayoutPage = () => {
   const [nfts, setNfts] = useState<any>(null);
   const [collections, setCollections] = useState<any>(null);
   const { contrat, address, setupContract } = useWallet();
+  const [fetcher] = useFetch();
   const { data: myNftsBlocks, runner: nftsRunner } =
     useBlockchain(getNFTbyOwner);
   const { data: myCollectionsBlocks, runner: collectionsRunner } =
@@ -40,10 +42,23 @@ const MyItems: NextWithLayoutPage = () => {
           const tokenUri = await contrat?.tokenURI(i.nftToken);
           if (!tokenUri) return;
           const { data } = await axios.get(tokenUri);
+
+          const targetnft = await fetcher({
+            url: `/nft/${ethers.utils.formatUnits("" + i?.nftToken, 18)}`,
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
           return {
             ...i,
             price: parseFloat(ethers.utils.formatUnits(i.price, 18)),
             metadata: data,
+            likes:
+              targetnft?.likes && targetnft?.likes.length > 0
+                ? targetnft.likes
+                : [],
           };
         })
       );
@@ -96,7 +111,7 @@ const MyItems: NextWithLayoutPage = () => {
     <div className="flex flex-col gap-5">
       <h1 className="text-white text-2xl font-bold">My Collections : </h1>
       <Carousel control items={collections} />
-      <h1  className="text-white text-2xl font-bold">My NFTs : </h1>
+      <h1 className="text-white text-2xl font-bold">My NFTs : </h1>
       <GridCardsWithControl nfts={nfts} id="nft" />
     </div>
   );

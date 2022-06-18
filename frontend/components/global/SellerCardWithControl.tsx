@@ -51,14 +51,18 @@ export const SellerCardWithControl = ({ item }: { item: any }) => {
             className="hidden z-50 absolute top-10 -left-full w-44 text-base list-none  rounded divide-y divide-gray-100 shadow bg-Black-3"
           >
             <ul className="py-1" aria-labelledby="dropdownButton">
-              <li>
-                <a
-                  href="#"
-                  className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                >
-                  Edit
-                </a>
-              </li>
+              <Link
+                href={`/nft/create?collection=${item?.metadata?.name.replace(
+                  " ",
+                  "-"
+                )}`}
+              >
+                <li>
+                  <a className=" cursor-pointer block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                    Add NFT
+                  </a>
+                </li>
+              </Link>
               <li>
                 <a
                   onClick={() =>
@@ -69,14 +73,16 @@ export const SellerCardWithControl = ({ item }: { item: any }) => {
                   Add Owner
                 </a>
               </li>
-              <li>
-                <a
-                  href="#"
-                  className="block py-2 px-4 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                >
-                  Delete
-                </a>
-              </li>
+              <Link href={`/collection/${item?.collectionToken?.toString()}`}>
+                <li>
+                  <a
+                    href="#"
+                    className="block py-2 px-4 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                  >
+                    Go
+                  </a>
+                </li>
+              </Link>
             </ul>
           </div>
         </div>

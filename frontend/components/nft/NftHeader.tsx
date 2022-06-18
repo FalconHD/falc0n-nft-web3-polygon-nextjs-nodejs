@@ -4,18 +4,22 @@ export const NftHeader = ({
   nftName,
   price,
   owner,
+  idx,
 }: {
   nftName: string;
   price: number;
-  owner: { name: string; joined: string };
+  owner?: { name: string; joined: string; avatar: string };
+  idx: number;
 }) => {
+  console.log("owner :", owner);
+
   return (
     <div className="flex flex-col">
       <section className="flex flex-col justify-center gap-3">
         <h1 className="text-3xl text-white font-bold">
           {nftName} &nbsp;
           <span className="text-lg rounded-xl border px-7 py-1 text-center">
-            9
+            {idx}
           </span>
         </h1>
         <span className="flex gap-3 justify-start items-center">
@@ -35,13 +39,19 @@ export const NftHeader = ({
         <div className="flex items-center space-x-4">
           <img
             className="w-14 h-14 rounded-full"
-            src="https://picsum.photos/200/300"
+            src={
+              owner?.avatar
+                ? "https://ipfs.infura.io/ipfs/" + owner?.avatar
+                : "https://picsum.photos/200/300"
+            }
             alt=""
           />
           <div className="space-y-1 font-medium text-white">
-            <div>{owner.name}</div>
+            <div>
+              {owner?.name ? owner?.name?.toLocaleUpperCase() : "Unamed"}
+            </div>
             <div className="text-sm text-gray-500 dark:text-gray-400">
-              Joined in {owner.joined}
+              Joined in {owner?.joined || "unknown"}
             </div>
           </div>
         </div>

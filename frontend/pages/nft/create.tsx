@@ -1,11 +1,19 @@
 import { NextWithLayoutPage } from "@/interfaces";
 import Head from "next/head";
-import React from "react";
+import React, { useEffect } from "react";
 import { CreateNftProvider } from "@/formikProviders";
 // import { useWallet } from "hooks";
 import { FormNFT } from "@/components";
+import { useRouter } from "next/router";
 
 const Create: NextWithLayoutPage = () => {
+  const {
+    query: { collection },
+  } = useRouter();
+
+  useEffect(() => {
+    console.log(collection);
+  }, [collection]);
   return (
     <div>
       <Head>
@@ -14,7 +22,7 @@ const Create: NextWithLayoutPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <CreateNftProvider>
-        <FormNFT />
+        <FormNFT fromQuery={collection?.toString().replace("-", " ")} />
       </CreateNftProvider>
     </div>
   );
